@@ -19,17 +19,19 @@ int SetCount(vector<T> X) {
 int main() {
     vector<int>X;
 	int set_size, repeat_count;
-	printf("please input size of set : \n");
-	scanf("%d",&set_size);
-	printf("please input replay count : \n");
-    scanf("%d",&repeat_count);
-	for (int i = 0; i < set_size; i++)		//init set x
-		X.push_back(i);
-	
-	int sum = 0;
-    srand((unsigned int)time(NULL));
-	for (int i = 0; i < repeat_count; i++)
-		sum += SetCount(X);
-	printf("the result is %d \n",  sum / repeat_count );
+	while(true){
+		printf("please input size of set : ");
+		scanf("%d",&set_size);
+		printf("please input replay count : ");
+		scanf("%d",&repeat_count);
+		for (int i = 0; i < set_size; i++)		//init set x
+			X.push_back(i);
+		
+		int sum = 0;
+		srand((unsigned int)time(NULL));
+		for (int i = 0; i < repeat_count; i++)
+			sum += SetCount(X);
+		printf("the result is %d \n",  sum / repeat_count );
+	}
 	return 0;
 }

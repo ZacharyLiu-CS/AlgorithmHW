@@ -41,17 +41,6 @@ void init(int n){
 	}
 	head=find(val,n,0);
 
-	//print val[] and ptr[]
-	// printf("i =\t\t");
-	// for(i=0;i<n;i++)
-	// 	printf("%d\t", i);
-	// printf("\nval[i] =\t");
-	// for(i=0;i<n;i++)
-	// 	printf("%d\t", val[i]);
-	// printf("\nptr[i] =\t");
-	// for(i=0;i<n;i++)
-	// 	printf("%d\t", ptr[i]);
-	// printf("head=%d",head);
 }
 
 int search(int x,int i){
@@ -78,18 +67,6 @@ int B(int x,int n){
 	return search(x,i);
 }
 
-int D(int x,int n){
-	srand(time(0));
-	int i=rand()%n;
-	int y=val[i];
-	if(x<y)
-		return search(x,head);
-	else if(x>y)
-		return search(x,ptr[i]);
-	else
-		return i;
-}
-
 int C(int x,int n){
 	int i=head;
 	int max=val[i];
@@ -105,6 +82,19 @@ int C(int x,int n){
 	}
 	return search(x,i);
 }
+int D(int x,int n){
+	srand(time(0));
+	int i=rand()%n;
+	int y=val[i];
+	if(x<y)
+		return search(x,head);
+	else if(x>y)
+		return search(x,ptr[i]);
+	else
+		return i;
+}
+
+
 
 int main() {
 	int n=0,x=0;

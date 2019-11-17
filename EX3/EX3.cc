@@ -6,7 +6,7 @@
 typedef double(*func)(double x);
 
 double func1(double x) {
-    return x*x*(-1.0);
+    return x*x;
 }
 double getRandom(double a, double b){
     double start = a < b? a:b;
@@ -23,14 +23,15 @@ double HitorMiss(func f, long n, double start, double end) {
         if(abs(y) <= abs(f(x)))
             k++;
     }
-
     return (end - start) * abs(f(end) - f(start)) *k * 1.0 / n;
 }
 
 int main() {
     long n;
-    printf("please input your number : \n");
-    scanf("%ld", &n);
-     printf("the result is : %lf\n", HitorMiss(func1, n, 3, 9));
+    while(true){
+        printf("please input your number : ");
+        scanf("%ld", &n);
+        printf("the result is : %.10lf\n", HitorMiss(func1, n, 3, 9));
+    }
     return 0;
 }

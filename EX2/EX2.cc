@@ -27,8 +27,10 @@ double HitorMiss(func f, long n) {
 
 int main() {
     long n;
-    printf("please input your number : \n");
-    scanf("%ld", &n);
-    printf("the result is :%lf\n", 4 * HitorMiss(func1, n));
+    while(true){
+        printf("please input your number : ");
+        scanf("%ld", &n);
+        printf("the result is :%.10lf\n", 4 * HitorMiss(func1, n));
+    }
     return 0;
 }
