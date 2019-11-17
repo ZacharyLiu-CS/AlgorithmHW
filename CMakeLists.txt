@@ -6,6 +6,3 @@ add_executable(EX2 EX2/EX2.cc)
 add_executable(EX3 EX3/EX3.cc)
 add_executable(EX5 EX5/EX5.cc)
 add_executable(EX7 EX7/EX7.cc)
-add_executable(EX9 EX9/EX9.cc)
-add_executable(EX10 EX10/EX10.cc)
-
