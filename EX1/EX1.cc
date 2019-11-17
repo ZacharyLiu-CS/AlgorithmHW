@@ -19,8 +19,10 @@ double Darts(long n) {
 
 int main() {
     long n;
-    printf("please input your number: \n");
-    scanf("%ld", &n);
-    printf("the result is : %lf\n", Darts(n));
+    while(true){
+        printf("please input your number: ");
+        scanf("%ld", &n);
+        printf("the result is : %lf\n", Darts(n));
+    }
     return 0;
 }

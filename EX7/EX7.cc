@@ -1,196 +1,146 @@
-﻿#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <math.h>
+﻿#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+#include<time.h>
+#include<limits.h>
+#define N 10000000
 
-typedef int (*search_func) (int);
+int val[N],ptr[N];
+int head=0;
 
-int *val, *ptr, n, head;
-int *choosen;
-
-int search(int x, int i) {
-    while(x > val[i] && i != -1)
-        i = ptr[i];
-
-    return i;
+int find(int val[],int length,int x){
+	int i=0,flag=0;
+	for(;i<length;i++){
+		if(val[i]==x){
+			flag=1;
+			break;
+		}
+	}
+	if(flag==1)
+		return i;
+	else
+		return -1;
 }
 
-int a(int x) {
-    return search(x, head);
+void init(int n){
+	int i=0;
+	for(;i<n;i++)
+		val[i]=i;
+	//shuffle
+	int j=0,tmp=0;
+	srand(time(0));
+	for(i=0;i<n;i++){
+		j=rand()%n;
+		tmp=val[i];
+		val[i]=val[j];
+		val[j]=tmp;
+	}
+	//set ptr[],sort
+	for(i=0;i<n;i++){
+		ptr[i]=find(val,n,val[i]+1);
+	}
+	head=find(val,n,0);
+
+	//print val[] and ptr[]
+	// printf("i =\t\t");
+	// for(i=0;i<n;i++)
+	// 	printf("%d\t", i);
+	// printf("\nval[i] =\t");
+	// for(i=0;i<n;i++)
+	// 	printf("%d\t", val[i]);
+	// printf("\nptr[i] =\t");
+	// for(i=0;i<n;i++)
+	// 	printf("%d\t", ptr[i]);
+	// printf("head=%d",head);
 }
 
-int b(int x) {
-    int i = head, j;
-    int max = val[i], y;
-    int sqrtN = (int) sqrt(n);
-
-    for (j = 0; j < sqrtN; j++) {
-        y = val[j];
-
-        if (y > max && y <= x) {
-            i = j;
-            max = y;
-        }
-    }
-
-    return search(x, i);
+int search(int x,int i){
+	while(x > val[i])
+		i=ptr[i];
+	return i;
 }
 
-void prepareForC(int l) {
-    int *used = (int *) malloc(sizeof(int) * n);
-    memset(used, 0, sizeof(int) * n);
-
-    int i, choose;
-
-    for (i = 0; i < l; i++) {
-        choose = rand() % n;
-
-        if (used[choose] == 0) {
-            used[choose] = 1;
-            choosen[i] = choose;
-
-        } else {
-            do {
-                choose++;
-
-                if (choose >= n)
-                    choose %= n;
-            } while(used[choose] == 1);
-
-            used[choose] = 1;
-            choosen[i] = choose;
-        }
-    }
-
-    free(used);
+int A(int x){
+	return search(x,head);
 }
 
-int c(int x) {
-    int i = head, j;
-    int max = val[i], y;
-    int sqrtN = (int) sqrt(n);
-
-    prepareForC(sqrtN);
-    for (j = 0; j < sqrtN; j++) {
-        y = val[choosen[j]];
-
-        if (y > max && y <= x) {
-            i = choosen[j];
-            max = y;
-        }
-    }
-
-    return search(x, i);
+int B(int x,int n){
+	int i=head;
+	int max=val[i];
+	int j=0,y=0;
+	for (j = 0; j < sqrt(n); ++j){
+		y=val[j];
+		if(max < y && y<=x){
+			i=j;
+			max=y;
+		}		
+	}
+	return search(x,i);
 }
 
-int d(int x) {
-    int i = rand() % n;
-    int y = val[i];
-
-    if (x < y)
-        return search(x, head);
-
-    else if (x > y)
-        return search(x, ptr[i]);
-
-    else
-        return i;
+int D(int x,int n){
+	srand(time(0));
+	int i=rand()%n;
+	int y=val[i];
+	if(x<y)
+		return search(x,head);
+	else if(x>y)
+		return search(x,ptr[i]);
+	else
+		return i;
 }
 
-void initArrays() {
-    int i, j, k, tmp;
-    for (i = 0; i < n; i++) {
-        val[i] = i;
-    }
-
-    for (i = 0; i < n / 2; i++) {
-        j = rand() % n;
-        k = rand() % n;
-
-        tmp = val[j];
-        val[j] = val[k];
-        val[k] = tmp;
-    }
-
-    int pre;
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < n; j++) {
-            if (val[j] == i)
-                break;
-        }
-        if (i == 0) {
-            head = j;
-            pre = head;
-        }
-        else {
-            ptr[pre] = j;
-            pre = j;
-        }
-    }
-    ptr[pre] = -1;
-
-}
-
-void run(search_func func, int replayCount) {
-    int i;
-    for (i = 0; i < replayCount; i++) {
-        int x = rand() % n;
-        func(x);
-    }
+int C(int x,int n){
+	int i=head;
+	int max=val[i];
+	int k=0,j=0,y=0;
+	srand(time(0));
+	for (k = 0; k < sqrt(n); ++k){
+		j=rand()%n;
+		y=val[j];
+		if(max < y && y<=x){
+			i=j;
+			max=y;
+		}		
+	}
+	return search(x,i);
 }
 
 int main() {
-    struct timeval start, finish;
-    double duration;
+	int n=0,x=0;
+	printf("please input n=");
+	scanf("%d",&n);
+	init(n);
+	clock_t start,end;
+	int index=-1;
+	while(true){
+		printf("please input the number you want to search (0~n-1):");
+		scanf("%d",&x);
 
-    int i, replayCount;
-    printf("Input array size:\n");
-    scanf("%d", &n);
-    printf("Input replay count:\n");
-    scanf("%d", &replayCount);
-    srand((unsigned int)time(NULL));
+		index=-1;
+		start=clock();
+		index=A(x);
+		end=clock();
+		printf("A: its index is %d. use time: %ld ms\n",index,end-start);
 
-    val = (int *) malloc(sizeof(int) * n);
-    ptr = (int *) malloc(sizeof(int) * n);
-    choosen = (int *) malloc(sizeof(int) * n);
+		index=-1;
+		start=clock();
+		index=B(x,n);
+		end=clock();
+		printf("B: its index is %d. use time: %ld ms\n",index,end-start);
 
-    initArrays();
+		index=-1;
+		start=clock();
+		index=C(x,n);
+		end=clock();
+		printf("C: its index is %d. use time: %ld ms\n",index,end-start);
 
-    gettimeofday(&start, NULL);
-    run(a, replayCount);
-    gettimeofday(&finish, NULL);
+		index=-1;
+		start=clock();
+		index=D(x,n);
+		end=clock();
+		printf("D: its index is %d. use time: %ld ms\n",index,end-start);
+}
 
-    duration = (finish.tv_sec - start.tv_sec) + (finish.tv_usec - start.tv_usec) / 1000000.0;
-    duration /= replayCount;
-    printf("Algorithm A run time: %lfs\n", duration);
-
-    gettimeofday(&start, NULL);
-    run(b, replayCount);
-    gettimeofday(&finish, NULL);
-
-    duration = (finish.tv_sec - start.tv_sec) + (finish.tv_usec - start.tv_usec) / 1000000.0;
-    duration /= replayCount;
-    printf("Algorithm B run time: %lfs\n", duration);
-
-    gettimeofday(&start, NULL);
-    run(c, replayCount);
-    gettimeofday(&finish, NULL);
-
-    duration = (finish.tv_sec - start.tv_sec) + (finish.tv_usec - start.tv_usec) / 1000000.0;
-    duration /= replayCount;
-    printf("Algorithm C run time: %lfs\n", duration);
-
-    gettimeofday(&start, NULL);
-    run(d, replayCount);
-    gettimeofday(&finish, NULL);
-
-    duration = (finish.tv_sec - start.tv_sec) + (finish.tv_usec - start.tv_usec) / 1000000.0;
-    duration /= replayCount;
-    printf("Algorithm D run time: %lfs\n", duration);
-
-    free(val);
-    free(ptr);
-    free(choosen);
-    return 0;
+	return 0;
 }
