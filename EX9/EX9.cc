@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-using namespace std;
+
 
 int uniform(int start ,int end ,int time){
     if(time == 1)
@@ -9,42 +9,78 @@ int uniform(int start ,int end ,int time){
     else
         return 0;
 }
-vector<int>  QueensLv(int queen_num){
-    vector<bool> col(queen_num+1,true),diag45(2*queen_num,true),diag135(2*queen_num+1,true);
-    vector<int> try_queen(queen_num+1);
-    int k = 0;
-    int nb = 0;
-    do{
-        nb = 0;
-        int j = 0;
-        for (int i = 1; i <= queen_num; i++){
-            int time = 1;
-            if(col[i] && diag45[i-k-1 + queen_num] && diag135[i+k+1] ){
-                nb+=1;
-                if(uniform(1,nb,time) == 1){
-                    j=i;
-                }
-                time++;
+std::deque<int> backtrace(int start , int queen_num){
+    std::set<int> col,diag45,diag135;
+    std::deque<int> try_queen;
+    int i = start;
+    int col_number = 1;
+    while(i <= queen_num){
+        for(; col_number <= queen_num; col_number++){
+            if(col.count(col_number) == 0 && diag45.count(i-col_number) == 0 && diag135.count(i+col_number) == 0 ) {
+                try_queen.push_back(col_number);
+                col.insert(col_number); diag45.insert(i-col_number); diag135.insert(i+col_number);
+                i++;
+                col_number = 0;
             }
         }
-        if(nb > 0){
-            k += 1;
-            try_queen[k] = j;
-            col[j] = false;
-            diag45[j-k + queen_num] = false;
-            diag135[j+k] = false;
+        if(i <= queen_num){
+            i--;
+            int wrong_col_placement = try_queen.back();
+            try_queen.pop_back();
+            col.erase(wrong_col_placement); diag45.erase(i-wrong_col_placement); diag135.erase(i+wrong_col_placement);
+            col_number = wrong_col_placement+1;
         }
-    }while(nb == 0 || k == queen_num);
-    if (nb > 0){
-        return try_queen;
+    }
+
+    return try_queen;
+}
+std::deque<int>  QueensLv(int queen_num,int stepVegas){
+    std::set<int> col,diag45,diag135;
+    std::deque<int> try_queen;
+    int repeatnum = 0;
+    while(true) {
+        col.clear();diag45.clear();diag135.clear();try_queen.clear();
+        int k = 0;
+        int nb = 0;
+        do {
+            nb = 0;
+            int j = 0;
+            int times = 1;
+            for (int i = 1; i <= queen_num; i++) {
+                if (col.count(i) == 0 && diag45.count(i - k - 1) == 0 && diag135.count(i + k + 1) == 0) {
+                    nb += 1;
+                    srand((unsigned) time(NULL));
+                    if (uniform(1, nb, times) == 1) j = i;
+                    times++;
+                }
+            }
+            if (nb > 0) {
+                k += 1;
+                try_queen.push_back(j);
+                col.insert(j);
+                diag45.insert(j - k);
+                diag135.insert(j + k);
+            }
+        } while (!(nb == 0 || k == queen_num));
+        if (nb > 0) {
+            std::cout << "QueensLv num : " << repeatnum << std::endl;
+            return try_queen;
+        }
+        repeatnum ++;
     }
 }
 
 
 
 int main(){
-    auto result = QueensLv(8);
-    for (int i =1; i < result.size(); i++)
-        cout << result[i]<< "";
-    cout << endl;
+    auto resultLV = QueensLv(8);
+    for (int i =0; i < resultLV.size(); i++)
+        std::cout << resultLV[i] << "";
+    std::cout << std::endl;
+
+    std::cout << "this is backtree funciton result:" << std::endl;
+     auto resultBT = backtrace(1,8);
+    for (auto i =resultBT.begin();i != resultBT.end() ; i++)
+        std::cout << *i << "";
+    std::cout << std::endl;
 }
