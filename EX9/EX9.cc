@@ -1,37 +1,48 @@
 #include <bits/stdc++.h>
+#include <chrono>
 
+typedef std::deque<int> (*func) (int,int);
 std::deque<int> backtrace(int start , int queen_num, std::set<int> col,
                           std::set<int> diag45, std::set<int> diag135,
                           std::deque<int> _try_queen);
-std::deque<int> leagcy_backtree(int queen_num);
+std::deque<int> leagcy_backtree(int queen_num,int useless = 0);
 std::deque<int>  QueensLV(int queen_num,int stepVegas);
-std::deque<int> leagcy_QueensLV(int queen_num);
+std::deque<int> leagcy_QueensLV(int queen_num,int useless = 0);
+long long calculate_time(func f,int run_times,int param_a,int param_b = 0);
 int main(){
     srand((unsigned int) time(NULL));
 
     // backtree run time
     std::cout << "this is backtree funciton result:" << std::endl;
-    auto resultBT = leagcy_backtree(8);
-    for (auto i =resultBT.begin();i != resultBT.end() ; i++)
-        std::cout << *i << "";
-    std::cout << std::endl;
+
+    for(int queen_num = 12;queen_num <=20; queen_num++) {
+        std::cout << calculate_time(leagcy_backtree, 1000, 12) << " ";
+    }
 
     // add lasVegas to backtree
-    auto resultLV = QueensLV(8,4);
-    for (auto i =resultLV.begin();i != resultLV.end() ; i++)
-        std::cout << *i << "";
-    std::cout << std::endl;
+    std::cout << "this is mixLasVegas funciton result:" << std::endl;
 
+    for(int queen_num = 12;queen_num <=20; queen_num++) {
+        std::cout << calculate_time(QueensLV, 1000, 12) << " ";
+    }
 
     // pure LasVegas function
     resultLV = leagcy_QueensLV(8);
     for (int i =0; i < resultLV.size(); i++)
         std::cout << resultLV[i] << "";
-    std::cout << std::endl;
 
+    std::cout << std::endl;
 
 }
 
+long long calculate_time(func f,int run_times,int param_a,int param_b){
+    long long start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    for(int i = 0; i < run_times; i++){
+        f(param_a,param_b);
+    }
+    long long end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    return (end -start)/run_times;
+}
 int uniform(int start ,int end ,int time = 0){
     if(time == 1)
         return 1;
@@ -70,7 +81,7 @@ std::deque<int> backtrace(int start , int queen_num, std::set<int> col,
 
     return try_queen;
 }
-std::deque<int> leagcy_backtree(int queen_num){
+std::deque<int> leagcy_backtree(int queen_num,int){
     std::set<int> col,diag45,diag135;
     std::deque<int> try_queen;
     int start = 1;
@@ -119,7 +130,7 @@ std::deque<int>  QueensLV(int queen_num,int stepVegas){
     }
 }
 
-std::deque<int> leagcy_QueensLV(int queen_num){
+std::deque<int> leagcy_QueensLV(int queen_num,int){
     std::set<int> col,diag45,diag135;
     std::deque<int> try_queen;
     int repeatnum = 1;
