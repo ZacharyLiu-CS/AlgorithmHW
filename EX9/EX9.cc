@@ -7,13 +7,20 @@ std::deque<int> backtrace(int start , int queen_num, std::set<int> col,
                           std::deque<int> _try_queen);
 std::deque<int> leagcy_backtree(int queen_num,int useless = 0);
 std::deque<int>  QueensLV(int queen_num,int stepVegas);
+<<<<<<< HEAD
 std::deque<int> leagcy_QueensLV(int queen_num,int useless = 0);
 long long calculate_time(func f,int run_times,int param_a,int param_b = 0);
+=======
+std::deque<int> leagcy_QueensLV(int queen_num);
+
+
+>>>>>>> b0b0c07fcb52da89d42c4bf8c7e4bae513d24cb0
 int main(){
     srand((unsigned int) time(NULL));
 
     // backtree run time
     std::cout << "this is backtree funciton result:" << std::endl;
+<<<<<<< HEAD
 
     for(int queen_num = 12;queen_num <=20; queen_num++) {
         std::cout << calculate_time(leagcy_backtree, 1000, 12) << " ";
@@ -21,13 +28,25 @@ int main(){
 
     // add lasVegas to backtree
     std::cout << "this is mixLasVegas funciton result:" << std::endl;
+=======
+    auto resultBT = leagcy_backtree(20);
+    for (auto i =resultBT.begin();i != resultBT.end() ; i++)
+        std::cout << *i << "";
+    std::cout << std::endl;
+
+    // add lasVegas to backtree
+    auto resultLV = QueensLV(20,13);
+    for (auto i =resultLV.begin();i != resultLV.end() ; i++)
+        std::cout << *i << "";
+    std::cout << std::endl;
+>>>>>>> b0b0c07fcb52da89d42c4bf8c7e4bae513d24cb0
 
     for(int queen_num = 12;queen_num <=20; queen_num++) {
         std::cout << calculate_time(QueensLV, 1000, 12) << " ";
     }
 
     // pure LasVegas function
-    resultLV = leagcy_QueensLV(8);
+    resultLV = leagcy_QueensLV(20);
     for (int i =0; i < resultLV.size(); i++)
         std::cout << resultLV[i] << "";
 
@@ -102,7 +121,6 @@ std::deque<int>  QueensLV(int queen_num,int stepVegas){
             for (int i = 1; i <= queen_num; i++) {
                 if (col.count(i) == 0 && diag45.count(i - k - 1) == 0 && diag135.count(i + k + 1) == 0) {
                     nb += 1;
-
                     if (uniform(1, nb, times) == 1) j = i;
                     times++;
                 }
@@ -123,7 +141,6 @@ std::deque<int>  QueensLV(int queen_num,int stepVegas){
                     continue;
                 }
             }
-            std::cout << "QueensLv num : " << repeatnum << std::endl;
             return try_queen;
         }
 
@@ -145,7 +162,6 @@ std::deque<int> leagcy_QueensLV(int queen_num,int){
             for (int i = 1; i <= queen_num; i++) {
                 if (col.count(i) == 0 && diag45.count(i - k - 1) == 0 && diag135.count(i + k + 1) == 0) {
                     nb += 1;
-
                     if (uniform(1, nb, times) == 1) j = i;
                     times++;
                 }
@@ -159,7 +175,6 @@ std::deque<int> leagcy_QueensLV(int queen_num,int){
             }
         } while (!(nb == 0 || k == queen_num ));
         if (nb > 0) {
-            std::cout << "QueensLv num : " << repeatnum << std::endl;
             return try_queen;
         }
         repeatnum ++;
