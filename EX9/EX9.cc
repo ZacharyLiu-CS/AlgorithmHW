@@ -5,43 +5,68 @@ typedef std::deque<int> (*func) (int,int);
 std::deque<int> backtrace(int start , int queen_num, std::set<int> col,
                           std::set<int> diag45, std::set<int> diag135,
                           std::deque<int> _try_queen);
-std::deque<int> leagcy_backtree(int queen_num,int useless = 0);
+std::deque<int> legacy_backtree(int queen_num,int useless = 0);
 std::deque<int>  QueensLV(int queen_num,int stepVegas);
 std::deque<int> leagcy_QueensLV(int queen_num,int useless = 0);
 long long calculate_time(func f,int run_times,int param_a,int param_b = 0);
 int main(){
     srand((unsigned int) time(NULL));
+    int repeat_num = 20;
+    int queen_start = 12;
+    int queen_end = 20;
 
     // backtree run time
     std::cout << "this is backtree funciton result:" << std::endl;
-
-    for(int queen_num = 12;queen_num <=20; queen_num++) {
-        std::cout << calculate_time(leagcy_backtree, 1000, 12) << " ";
+    long long unitconversion = 1000000;
+    printf("queen_num       |");
+    for(int queen_num = queen_start;queen_num <= queen_end; queen_num++) {
+        printf("   %2d      |",queen_num);
     }
+    printf("\nbacktree time   |");
+    for(int queen_num = queen_start;queen_num <= queen_end; queen_num++) {
+        long long used_time = calculate_time(legacy_backtree, repeat_num, queen_num);
+        printf("%.7fs |" ,used_time/(unitconversion*1.0));
 
-    // add lasVegas to backtree
-    std::cout << "this is mixLasVegas funciton result:" << std::endl;
-
-    for(int queen_num = 12;queen_num <=20; queen_num++) {
-        std::cout << calculate_time(QueensLV, 1000, 12) << " ";
     }
+    printf("\nlasVegas time   |");
+    for(int queen_num = queen_start;queen_num <= queen_end; queen_num++) {
+        long long used_time = calculate_time(leagcy_QueensLV, repeat_num, queen_num);
+        printf("%.7fs |" ,used_time/(unitconversion*1.0));
+    }
+    printf("\nmixVegas time   |");
 
-    // pure LasVegas function
-    resultLV = leagcy_QueensLV(20);
-    for (int i =0; i < resultLV.size(); i++)
-        std::cout << resultLV[i] << "";
-
-    std::cout << std::endl;
+    int minSteps[queen_end-queen_start+1];
+    for(int queen_num = queen_start;queen_num <= queen_end; queen_num++) {
+        long long  minTime = LLONG_MAX;
+        int minStep ;
+        for(int stepVegas = 0; stepVegas < queen_num; stepVegas++){
+            long long used_time = calculate_time(QueensLV, repeat_num, queen_num,stepVegas);
+            if(used_time < minTime){
+                minTime = used_time;
+                minStep = stepVegas;
+            }
+        }
+	    minSteps[queen_num -queen_start] = minStep;
+        printf("%.7fs |" ,minTime/(unitconversion*1.0));
+    }
+    printf("\nmixVegas minStep|");
+    for(int i = 0; i <= queen_end-queen_start; i++)
+        printf("  %7d  |", minSteps[i]);
+    printf("\n");
+    return 0;
 
 }
 
 long long calculate_time(func f,int run_times,int param_a,int param_b){
-    long long start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    std::vector<long long> used_times;
     for(int i = 0; i < run_times; i++){
+        long long start = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         f(param_a,param_b);
+        long long end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        used_times.push_back(end - start);
     }
-    long long end = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    return (end -start)/run_times;
+    std::sort(used_times.begin(),used_times.end());
+    return used_times[run_times/2];
 }
 int uniform(int start ,int end ,int time = 0){
     if(time == 1)
@@ -68,7 +93,7 @@ std::deque<int> backtrace(int start , int queen_num, std::set<int> col,
         }
         if(i <= queen_num){
             i--;
-            if(try_queen.empty()){
+            if(try_queen.empty() || i < start){
                 try_queen.push_front(-1);
                 return try_queen;
             }
@@ -81,13 +106,14 @@ std::deque<int> backtrace(int start , int queen_num, std::set<int> col,
 
     return try_queen;
 }
-std::deque<int> leagcy_backtree(int queen_num,int){
+std::deque<int> legacy_backtree(int queen_num,int){
     std::set<int> col,diag45,diag135;
     std::deque<int> try_queen;
     int start = 1;
     return backtrace(start,queen_num,col,diag45,diag135,try_queen);
 }
 std::deque<int>  QueensLV(int queen_num,int stepVegas){
+
     std::set<int> col,diag45,diag135;
     std::deque<int> try_queen;
     int repeatnum = 1;
@@ -124,10 +150,8 @@ std::deque<int>  QueensLV(int queen_num,int stepVegas){
             }
             return try_queen;
         }
-
     }
 }
-
 std::deque<int> leagcy_QueensLV(int queen_num,int){
     std::set<int> col,diag45,diag135;
     std::deque<int> try_queen;
@@ -143,6 +167,7 @@ std::deque<int> leagcy_QueensLV(int queen_num,int){
             for (int i = 1; i <= queen_num; i++) {
                 if (col.count(i) == 0 && diag45.count(i - k - 1) == 0 && diag135.count(i + k + 1) == 0) {
                     nb += 1;
+
                     if (uniform(1, nb, times) == 1) j = i;
                     times++;
                 }
@@ -156,11 +181,13 @@ std::deque<int> leagcy_QueensLV(int queen_num,int){
             }
         } while (!(nb == 0 || k == queen_num ));
         if (nb > 0) {
+
             return try_queen;
         }
         repeatnum ++;
     }
 }
+
 
 
 

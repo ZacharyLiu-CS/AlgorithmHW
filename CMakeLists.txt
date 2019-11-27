@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(AlgorithmHw1)
-add_compile_options(-std=c++11 -g)
+add_compile_options(-std=c++11 -g -o3)
 add_executable(EX1 EX1/EX1.cc)
 add_executable(EX2 EX2/EX2.cc)
 add_executable(EX3 EX3/EX3.cc)
